@@ -1,3 +1,75 @@
 ---
 title : 5. データモデル
 ---
+
+### 5.1 主な管理データ
+
+### ユーザー情報
+    - 求職者および企業の基本情報、プロフィール、認証情報
+### インターンシップ情報
+    - 日時、業務内容、報酬、募集人数、必要資格などの詳細
+### 評価情報
+    - 体験後の相互評価（テキスト形式のコメント、スコア）
+
+### 5.2 想定テーブル構成例
+### `internships` テーブル
+
+| カラム名               | データ型        | 説明                                   |
+|------------------------|-----------------|----------------------------------------|
+| internship_id          | SERIAL          | インターンシップID（主キー）           |
+| company_id             | INTEGER         | 企業ID（外部キー）                     |
+| title                  | VARCHAR(255)     | インターンシップのタイトル             |
+| description            | TEXT            | インターンシップの説明                 |
+| date                   | DATE            | インターンシップの日程                 |
+| location               | VARCHAR(255)     | インターンシップの場所                 |
+| reward                 | VARCHAR(100)     | 報酬                                   |
+| required_qualifications| TEXT            | 必要資格                               |
+| available_spots        | INTEGER         | 募集人数                               |
+| created_at             | TIMESTAMP       | 作成日時                               |
+| updated_at             | TIMESTAMP       | 更新日時                               |
+
+### `applications` テーブル
+
+| カラム名          | データ型        | 説明                                 |
+|-------------------|-----------------|--------------------------------------|
+| application_id    | SERIAL          | 応募ID（主キー）                     |
+| user_id           | INTEGER         | ユーザーID（外部キー）               |
+| internship_id     | INTEGER         | インターンシップID（外部キー）       |
+| status            | VARCHAR(50)     | 応募の状態（例: 未対応、承認、拒否） |
+| created_at        | TIMESTAMP       | 作成日時                             |
+| updated_at        | TIMESTAMP       | 更新日時                             |
+
+### `reviews` テーブル
+
+| カラム名         | データ型       | 説明                                 |
+|------------------|----------------|--------------------------------------|
+| review_id        | SERIAL         | 評価ID（主キー）                     |
+| reviewer_id      | INTEGER        | 評価者のユーザーID（外部キー）       |
+| reviewee_id      | INTEGER        | 評価対象のユーザーID（外部キー）     |
+| internship_id    | INTEGER        | インターンシップID（外部キー）       |
+| rating           | INTEGER        | 評価スコア                           |
+| comment          | TEXT           | 評価コメント                         |
+| created_at       | TIMESTAMP      | 作成日時                             |
+| updated_at       | TIMESTAMP      | 更新日時                             |
+
+### `internship_participants` テーブル
+
+| カラム名         | データ型       | 説明                                 |
+|------------------|----------------|--------------------------------------|
+| internship_id    | INTEGER        | インターンシップID（外部キー）       |
+| user_id          | INTEGER        | ユーザーID（外部キー）               |
+| status           | VARCHAR(50)    | 参加状態（例: 参加中、終了）         |
+| created_at       | TIMESTAMP      | 作成日時                             |
+| updated_at       | TIMESTAMP      | 更新日時                             |
+
+
+## 5.3 データの関係性
+
+### 応募プロセス
+- 求職者がインターンシップに申し込むと、`applications` テーブルに記録され、企業へ通知が送信される。
+### 評価
+- インターンシップ終了後、企業と求職者が相互に評価を行い、`reviews` テーブルに記録。  
+評価情報は求職者のプロフィールに反映される。
+
+## 5.4 セキュリティ・保管方法
+- すべての個人情報および評価情報は暗号化し、定期的なバックアップと冗長化を実施
