@@ -12,7 +12,14 @@ title : 5. データモデル
     - 体験後の相互評価（テキスト形式のコメント、スコア）
 
 ### 5.2 想定テーブル構成例
+
+:::info
+- ユーザーID（`user_id`,`reviewer_id`,`reviewee_id`,`company_id`）は、求職者と企業を区別するための共通のID
+- レビュワー（`reviewer_id`）とレビュイー（`reviewee_id`）は、`user_id` ,`company_id` と同じIDを使用（いずれかが求職者、もう一方が企業）
+:::
+
 ### `internships` テーブル
+インターンシップに関する基本情報を管理する。
 
 | カラム名               | データ型        | 説明                                   |
 |------------------------|-----------------|----------------------------------------|
@@ -22,24 +29,26 @@ title : 5. データモデル
 | description            | TEXT            | インターンシップの説明                 |
 | date                   | DATE            | インターンシップの日程                 |
 | location               | VARCHAR(255)     | インターンシップの場所                 |
-| reward                 | VARCHAR(100)     | 報酬                                   |
+| reward                 | VARCHAR(100)     | 報酬（円）                            |
 | required_qualifications| TEXT            | 必要資格                               |
 | available_spots        | INTEGER         | 募集人数                               |
 | created_at             | TIMESTAMP       | 作成日時                               |
 | updated_at             | TIMESTAMP       | 更新日時                               |
 
 ### `applications` テーブル
+インターンシップへの応募状態（ステータス）を管理する。
 
 | カラム名          | データ型        | 説明                                 |
 |-------------------|-----------------|--------------------------------------|
 | application_id    | SERIAL          | 応募ID（主キー）                     |
 | user_id           | INTEGER         | ユーザーID（外部キー）               |
 | internship_id     | INTEGER         | インターンシップID（外部キー）       |
-| status            | VARCHAR(50)     | 応募の状態（例: 未対応、承認、拒否） |
+| status            | VARCHAR(50)     | 応募の状態（例: 未対応、承認、拒否） ※ 任意の文字列のみ対応 |
 | created_at        | TIMESTAMP       | 作成日時                             |
 | updated_at        | TIMESTAMP       | 更新日時                             |
 
 ### `reviews` テーブル
+インターンシップのレビュー情報を管理する。
 
 | カラム名         | データ型       | 説明                                 |
 |------------------|----------------|--------------------------------------|
@@ -53,6 +62,7 @@ title : 5. データモデル
 | updated_at       | TIMESTAMP      | 更新日時                             |
 
 ### `internship_participants` テーブル
+インターンシップの参加者情報を管理する。
 
 | カラム名         | データ型       | 説明                                 |
 |------------------|----------------|--------------------------------------|
@@ -61,7 +71,6 @@ title : 5. データモデル
 | status           | VARCHAR(50)    | 参加状態（例: 参加中、終了）         |
 | created_at       | TIMESTAMP      | 作成日時                             |
 | updated_at       | TIMESTAMP      | 更新日時                             |
-
 
 ## 5.3 データの関係性
 
