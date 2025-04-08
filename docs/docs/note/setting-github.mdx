@@ -1,0 +1,28 @@
+---
+title: ⚙️ GitHubの設定
+sidebar_position: 1
+---
+ここでは、サーバーの起動方法について説明します。
+
+## Gitのインストール
+Gitをインストールする方法は下記URLを参照してください。
+- [Gitのインストール方法(Windows版)](https://qiita.com/takeru-hirai/items/4fbe6593d42f9a844b1c)
+- [Git を macOS にインストールする](https://zenn.dev/mesgory/articles/948876ac1b7517)
+
+## Gitの設定
+コマンドライン上で以下のコマンドを使用して、Gitのユーザー名とメールアドレスを設定してください。
+
+```bash
+git config --global user.name "ユーザー名"
+git config --global user.email メールアドレス"
+```
+
+:::note
+`ユーザー名` はGitHubの「表示名」ではなく、GitHubの「ユーザー名」を指定してください。  
+`メールアドレス` はGitHubに登録しているメールアドレスを指定してください。
+:::
+
+## GitHubでのSSHキーの設定
+SSHキーを使用してGitHubに接続する場合は、SSHキーを生成し、GitHubに登録する必要があります。  
+GitHubでSSHキーを設定する方法は下記URLを参照してください。
+- [GitHubでssh接続する手順 \~公開鍵・秘密鍵の生成から\~ ](https://qiita.com/shizuma/items/2b2f873a0034839e47ce)

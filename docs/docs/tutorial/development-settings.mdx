@@ -1,0 +1,72 @@
+---
+title: 🔧 開発環境の構築
+sidebar_position: 1
+---
+ここでは、開発に必要な環境の構築方法について説明します。
+## 0. 前提条件
+- Gitがインストール済みである事  
+（インストール済み出ない場合は [GitHubの設定について](https://gamification-for-factory.netlify.app/docs/note/setting-github) を参照してください。）
+- Pythonがインストール済みである事
+
+
+## 1. 📥 レポジトリをクローンする
+以下のコマンドより、プロジェクトをクローンしてください。
+
+```bash
+git clone https://github.com/nogikun/Gamification-for-factory.git
+```
+
+## 2. 🐳 DockerDesktopのインストール
+Docker, Docker Compose を利用するために、DockerDesktopをインストールしてください。
+
+- [Windows 11にDocker Desktopを入れる手順](https://qiita.com/zembutsu/items/a98f6f25ef47c04893b3)
+
+インストールが終了したら、新しくターミナルを開いて以下のコマンドを実行し、Dockerが正常にインストールされているか確認してください。
+
+```bash
+docker --version
+```
+```bash
+docker-compose --version
+```
+
+
+{/* ## 3. 📦 必要なパッケージをインストールする（単体テスト用）
+以下のコマンドを実行して、必要なパッケージをインストールしてください。 */}
+
+
+{/* ## 2. 🪧 pre-commitの設定
+`pre-commit` をインストールする方法は下記の通りです。
+
+### pre-commitのインストール
+#### ● linux・macOSの場合
+brewがインストールされている状態で以下のコマンドを実行してください。
+```bash
+brew install pre-commit
+```
+
+:::note
+`brew` がインストールされていない場合は、[こちら](https://brew.sh/ja/) からインストールしてください。  
+Homebrew：https://brew.sh/ja/
+:::
+
+#### ● Windowsの場合
+※ macOSでも以下のコードは実行可能です。
+```bash
+pip install pre-commit
+```
+
+### pre-commitの適用
+プロジェクトのルートディレクトリに移動し、以下のコマンドを実行してください。
+```bash
+pre-commit install
+```
+
+### pre-commitの設定変更
+`pre-commit` の設定を変更する場合は、`/.pre-commit-config.yaml` を編集してください。  
+設定の詳細については、[こちら(https://pre-commit.com/)](https://pre-commit.com/) を参照してください。  
+編集後は、以下のコマンドを実行してください。
+```bash
+pre-commit clean
+pre-commit install
+``` */}

@@ -1,0 +1,9 @@
+{
+    "label": "開発ノート",
+    "position": 4,
+    "link": {
+        "title": "Note",
+        "type": "generated-index",
+        "description": "ここでは制作物の起動方法・利用方法について記載します。"
+    }
+}
