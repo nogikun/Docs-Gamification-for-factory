@@ -90,7 +90,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/nogikun/Docs-Gamification-for-factory',
             label: 'GitHub',
             position: 'right',
           },
@@ -104,7 +104,7 @@ const config = {
             items: [
               {
                 label: 'Tutorial',
-                to: '/docs/intro',
+                to: '/docs/category/tutorial',
               },
             ],
           },
@@ -134,7 +134,7 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/nogikun/Docs-Gamification-for-factory',
               },
             ],
           },
@@ -144,6 +144,18 @@ const config = {
       prism: {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
+      },
+      // Giscusの設定を追加
+      giscus: {
+        repo: 'nogikun/Docs-Gamification-for-factory',
+        repoId: 'R_kgDONv_IsA',
+        category: 'General',
+        categoryId: 'DIC_kwDONv_IsM4CpD4x',
+        mapping: 'pathname',
+        reactionsEnabled: '1',
+        theme: 'light',
+        darkTheme: 'dark',
+        lang: 'ja',
       },
     }),
 };
