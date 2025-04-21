@@ -1,0 +1,9 @@
+{
+    "label": "Tutorial",
+    "position": 1,
+    "link": {
+        "title": "Getting Started 🚀",
+        "type": "generated-index",
+        "description": "ここでは制作物の起動方法・利用方法について記載します。"
+    }
+}
