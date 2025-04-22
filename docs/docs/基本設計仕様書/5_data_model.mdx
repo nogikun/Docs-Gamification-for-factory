@@ -18,67 +18,174 @@ title : 5. データモデル
 - レビュワー（`reviewer_id`）とレビュイー（`reviewee_id`）は、`user_id` ,`company_id` と同じIDを使用（いずれかが求職者、もう一方が企業）
 :::
 
-### `internships` テーブル
-インターンシップに関する基本情報を管理する。
+### `events` テーブル
+イベントに関する基本情報を管理する。
 
 | カラム名               | データ型        | 説明                                   |
 |------------------------|-----------------|----------------------------------------|
-| internship_id          | SERIAL          | インターンシップID（主キー）           |
-| company_id             | INTEGER         | 企業ID（外部キー）                     |
-| title                  | VARCHAR(255)     | インターンシップのタイトル             |
-| description            | TEXT            | インターンシップの説明                 |
-| date                   | DATE            | インターンシップの日程                 |
-| location               | VARCHAR(255)     | インターンシップの場所                 |
-| reward                 | VARCHAR(100)     | 報酬（円）                            |
-| required_qualifications| TEXT            | 必要資格                               |
+| event_id               | SERIAL          | イベントID（主キー）                    |
+| company_id             | UUID            | 企業ID（外部キー）                      |
+| event_type             | ENUM            | イベントのタイプ（インターンシップ or 説明会） |
+| title                  | VARCHAR(255)    | イベントのタイトル                      |
+| image                  | BYTEA           | イベントのサムネイルをバイナリデータ(base64, utf-8)として保存する |
+| description            | TEXT            | イベントの説明                          |
+| start_date             | TIMESTAMP       | イベントの開始日時                      |
+| end_date               | TIMESTAMP       | イベントの終了日時                      |
+| location               | VARCHAR(255)    | イベントの場所                          |
+| reward                 | VARCHAR(100)    | 報酬（円）(*1)                          |
+| required_qualifications| TEXT            | 必要資格 (*1)                          |
 | available_spots        | INTEGER         | 募集人数                               |
 | created_at             | TIMESTAMP       | 作成日時                               |
 | updated_at             | TIMESTAMP       | 更新日時                               |
 
+*1: event_type が"説明会"である時、Nullが記録される。
+
 ### `applications` テーブル
-インターンシップへの応募状態（ステータス）を管理する。
+イベントへの応募状態（ステータス）を管理する。
 
 | カラム名          | データ型        | 説明                                 |
 |-------------------|-----------------|--------------------------------------|
-| application_id    | SERIAL          | 応募ID（主キー）                     |
-| user_id           | INTEGER         | ユーザーID（外部キー）               |
-| internship_id     | INTEGER         | インターンシップID（外部キー）       |
+| application_id    | UUID            | 応募ID（主キー）                     |
+| user_id           | UUID            | ユーザーID（外部キー）               |
+| event_id          | UUID            | イベントID（外部キー）               |
 | status            | VARCHAR(50)     | 応募の状態（例: 未対応、承認、拒否） ※ 任意の文字列のみ対応 |
 | created_at        | TIMESTAMP       | 作成日時                             |
 | updated_at        | TIMESTAMP       | 更新日時                             |
 
 ### `reviews` テーブル
-インターンシップのレビュー情報を管理する。
+イベントのレビュー情報を管理する。
 
 | カラム名         | データ型       | 説明                                 |
 |------------------|----------------|--------------------------------------|
-| review_id        | SERIAL         | 評価ID（主キー）                     |
-| reviewer_id      | INTEGER        | 評価者のユーザーID（外部キー）       |
-| reviewee_id      | INTEGER        | 評価対象のユーザーID（外部キー）     |
-| internship_id    | INTEGER        | インターンシップID（外部キー）       |
+| review_id        | UUID           | 評価ID（主キー）                     |
+| reviewer_id      | UUID           | 評価者のユーザーID（外部キー）       |
+| reviewee_id      | UUID           | 評価対象のユーザーID（外部キー）     |
+| event_id         | UUID           | イベントID（外部キー）               |
 | rating           | INTEGER        | 評価スコア                           |
 | comment          | TEXT           | 評価コメント                         |
+| advice           | TEXT           | アドバイス                           |
 | created_at       | TIMESTAMP      | 作成日時                             |
 | updated_at       | TIMESTAMP      | 更新日時                             |
 
-### `internship_participants` テーブル
-インターンシップの参加者情報を管理する。
+### `participants` テーブル
+イベント参加者情報を管理する。
 
 | カラム名         | データ型       | 説明                                 |
 |------------------|----------------|--------------------------------------|
-| internship_id    | INTEGER        | インターンシップID（外部キー）       |
-| user_id          | INTEGER        | ユーザーID（外部キー）               |
-| status           | VARCHAR(50)    | 参加状態（例: 参加中、終了）         |
+| event_id         | UUID           | イベントID（外部キー）               |
+| user_id          | UUID           | ユーザーID（外部キー）               |
+| status           | ENUM           | 参加状態（申請中、参加中、終了）     |
 | created_at       | TIMESTAMP      | 作成日時                             |
 | updated_at       | TIMESTAMP      | 更新日時                             |
+
+### `user` テーブル
+ユーザー情報を管理する。
+
+| カラム名         | データ型       | 説明                                 |
+|------------------|----------------|--------------------------------------|
+| user_id          | UUID           | ユーザーID（主キー）                 |
+| user_type        | ENUM           | ユーザータイプ（参加者、企業）       |
+| user_name        | VARCHAR(50)    | ユーザー名・企業名                   |
+| created_at       | TIMESTAMP      | 作成日時                             |
+| login_time       | TIMESTAMP      | 最終ログイン日時                     |
+| ai_advice        | TEXT           | 過去に本ユーザーに向けられたレビューをAIがまとめたアドバイスを記録 |
+
+### `applicant` テーブル
+参加者の個人情報を管理する。エントリーシートに活用する。
+
+| カラム名         | データ型       | 説明                                 |
+|------------------|----------------|--------------------------------------|
+| user_id          | UUID           | ユーザーID（主キー）                 |
+| last_name        | VARCHAR(50)    | 姓                                   |
+| first_name       | VARCHAR(50)    | 名                                   |
+| mail_address     | TEXT           | メールアドレス                       |
+| phone_number     | VARCHAR(50)    | 電話番号                             |
+| address          | TEXT           | 住所                                 |
+| birth_date       | TIMESTAMP      | 生年月日                             |
+| license          | TEXT           | 資格、スキル                         |
+| updated_at       | TIMESTAMP      | データ更新日時                       |
+
+### `company` テーブル
+会社の基本情報を管理する。
+
+| カラム名             | データ型       | 説明                                 |
+|----------------------|----------------|--------------------------------------|
+| user_id              | UUID           | ユーザーID（主キー）                 |
+| company_name         | VARCHAR(50)    | 企業名                               |
+| mail_address         | TEXT           | メールアドレス                       |
+| phone_number         | VARCHAR(50)    | 電話番号                             |
+| address              | TEXT           | 住所                                 |
+| capital              | INTEGER        | 資本金                               |
+| employees            | INTEGER        | 従業員数                             |
+| establishment_date   | TIMESTAMP      | 設立日                               |
+| overview             | TEXT           | 会社概要                             |
+| updated_at           | TIMESTAMP      | 更新日時                             |
+
+### `player` テーブル
+ゲームの進行度に必要な情報を管理する。
+
+| カラム名         | データ型       | 説明                                 |
+|------------------|----------------|--------------------------------------|
+| user_id          | UUID           | ユーザーID（主キー）                 |
+| level            | INTEGER        | レベル                               |
+| experience       | INTEGER        | 経験値                               |
+| skill_data       | JSON           | スキルデータ (*2)                    |
+| item_data        | JSON           | 保有中のアイテム (*3)                |
+| updated_at       | TIMESTAMP      | 更新日時                             |
+
+*2 : スキルデータ（JSON）
+```json
+{"skill_data": [
+    {
+        "skill_label": "",
+        "skill_level": 0,
+        "skill_exp": 0
+    },
+    {
+        "skill_label": "",
+        "skill_level": 0,
+        "skill_exp": 0
+    }
+]}
+```
+
+*3：保有中のアイテム
+```json
+{"items": [
+    {
+        "item_id": "",
+        "durability": 0        // ← 残り利用できる回数
+    },
+    {
+        "item_id": "",
+        "durability": 0
+    }
+]}
+```
+
+### `game_item` テーブル
+ゲームの進行度に必要な情報を管理する。
+
+| カラム名         | データ型       | 説明                                 |
+|------------------|----------------|--------------------------------------|
+| item_id          | UUID           | アイテムID（主キー）                 |
+| item_type        | ENUM           | アイテムタイプ（武器、支援アイテム） |
+| atk              | INTEGER        | 攻撃力                               |
+| hit_rate         | REAL           | 命中率                               |
+| crit_dmg         | INTEGER        | 会心ダメージ（攻撃力より加算されるダメージ） |
+| crit_rate        | REAL           | 会心率                               |
+
+※ 支援アイテムの場合、加算される値をそれぞれに保存する。
 
 ## 5.3 データの関係性
 
 ### 応募プロセス
-- 求職者がインターンシップに申し込むと、`applications` テーブルに記録され、企業へ通知が送信される。
+- 求職者がインターンシップ・説明会に申し込むと、`applications` テーブルに記録され、企業へ通知が送信される。
+
 ### 評価
 - インターンシップ終了後、企業と求職者が相互に評価を行い、`reviews` テーブルに記録。  
 評価情報は求職者のプロフィールに反映される。
+- 説明会終了後、求職者が企業アンケートを行い、`reviews` テーブルに記録。
 
 ## 5.4 セキュリティ・保管方法
 - すべての個人情報および評価情報は暗号化し、定期的なバックアップと冗長化を実施
