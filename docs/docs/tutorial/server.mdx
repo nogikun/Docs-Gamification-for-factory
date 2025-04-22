@@ -1,0 +1,29 @@
+---
+title: 👨‍💻 サーバーの起動方法
+sidebar_position: 2
+comments: true
+---
+ここでは、サーバーの起動方法について説明します。
+
+## 0. 前提条件
+- Gitがインストール済みである事  
+（インストール済み出ない場合は [GitHubの設定について](https://gamification-for-factory.netlify.app/docs/note/setting-github) を参照してください。）
+- Docker, Docker Compose がインストール済みである事  
+（インストール済み出ない場合は [開発環境の構築について](https://gamification-for-factory.netlify.app/docs/tutorial/development-settings#2--dockerdesktopのインストール) を参照してください。）
+
+## 1. レポジトリをクローンする
+```bash
+git clone https://github.com/nogikun/Gamification-for-factory.git
+```
+
+## 2. ディレクトリに移動する
+以下のコマンドより、プロジェクトのディレクトリに移動してください。
+```bash
+cd Gamification-for-factory/dev/backend
+```
+
+## 3. サーバーを起動する
+Dockerのデーモン（DockerDesktop）が起動している状態で以下のコマンドを実行してください。
+```bash
+docker-compose up
+```

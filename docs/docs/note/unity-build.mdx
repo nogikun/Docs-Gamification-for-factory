@@ -1,0 +1,90 @@
+---
+title: 📲 Unityアプリのビルド方法
+sidebar_position: 2
+comments: true
+---
+
+ここでは、Unityアプリのビルド方法と実行方法について説明します。
+
+## 0. 前提条件
+- Unityがインストール済みである事
+- Android SDKがUnityに設定されている事
+- Android端末またはエミュレータが存在する事
+- Android端末でUSBデバッグが有効になっている事
+
+## 1. Unityでのビルド設定
+1. **プロジェクトを開く**
+    - Unityを起動し、ビルドするプロジェクトを開きます。
+
+2. **プラットフォーム設定**
+    - メニューから「File」→「Build Settings」を選択します。
+    - プラットフォームリストから「Android」を選択し、「Switch Platform」をクリックします。
+
+3. **Player Settings設定**
+    - Build Settingsウィンドウの「Player Settings」ボタンをクリックします。
+    - 「Other Settings」セクションで以下を設定します：
+        - Package Name: com.yourcompany.appname
+        - Minimum API Level: Android 7.0 (API level 24)以上を推奨
+        - Target API Level: 最新を推奨
+
+4. **Keystoreの設定**（リリース用）
+    - 「Publishing Settings」で「Custom Keystore」を選択
+    - 新規作成または既存のkeystoreを指定
+
+## 2. ビルドと実行
+
+### 方法1: Unityから直接実行
+1. Android端末をUSBでPCに接続し、USBデバッグを有効にします。
+2. Build Settingsで「Build and Run」をクリックします。
+3. ビルドファイルの保存先を指定してビルドを開始します。
+4. ビルド完了後、アプリが自動的に端末にインストールされ起動します。
+
+### 方法2: APKのみビルド
+1. Build Settingsで「Build」をクリックします。
+2. ビルドファイルの保存先を指定してビルドを開始します。
+3. 指定フォルダに.apkファイルが生成されます。
+
+## 3. APKインストール方法（adb）
+
+### 準備
+1. **Android SDKの確認**
+    - Android SDKの`platform-tools`フォルダがPATHに追加されていることを確認します。
+
+2. **端末の接続**
+    - Android端末をUSBケーブルでPCに接続します。
+    - USBデバッグが有効になっていることを確認します。
+
+### adbコマンド実行
+1. **接続端末の確認**
+    ```
+    adb devices
+    ```
+    接続されている端末のリストが表示されます。
+
+2. **APKのインストール**
+    ```
+    adb install /path/to/your-app.apk
+    ```
+    更新インストールの場合は:
+    ```
+    adb install -r /path/to/your-app.apk
+    ```
+
+3. **特定端末へのインストール**（複数端末接続時）
+    ```
+    adb -s device_id install /path/to/your-app.apk
+    ```
+    `device_id`は`adb devices`コマンドで確認できます。
+
+4. **インストール確認**
+    ```
+    adb shell pm list packages | grep <パッケージ名の一部>
+    ```
+
+5. **アプリの起動**
+    ```
+    adb shell monkey -p com.yourcompany.appname 1
+    ```
+
+### アンインストール
+インストールされたアプリをアンインストールする場合は、Android端末の設定からアプリを削除してください。
