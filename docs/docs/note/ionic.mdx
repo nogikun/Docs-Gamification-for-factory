@@ -1,0 +1,322 @@
+---
+title: 💻 ionicの環境構築について
+sidebar_position: 3
+comments: true
+---
+
+# Android開発環境セットアップガイド
+
+このガイドでは、Ionic + Capacitor + Reactプロジェクトを使ってAndroidアプリをビルド・実行するために必要な環境設定について説明します。
+
+:::danger
+この記事は、AIによって生成されたものであり、正確性や最新性を保証するものではありません。  
+実際の環境構築においては、公式ドキュメントや信頼できる情報源を参照してください。  
+動作確認を行い次第、内容を更新しますので、しばらくお待ちください。
+:::
+
+## 必要な前提条件
+
+- Node.js (v14以上)
+- npm または yarn
+- Git
+- コマンドラインインターフェース
+
+## 1. JDK (Java Development Kit)のインストール
+
+AndroidビルドにはJDK 11以上が必要です。
+
+### Windows
+
+1. **AdoptOpenJDK**または**Amazon Corretto**などのJDK配布元からJDKをダウンロード:
+   - [AdoptOpenJDK](https://adoptopenjdk.net/)
+   - [Amazon Corretto](https://aws.amazon.com/jp/corretto/)
+
+2. **インストーラーを実行**し、指示に従ってインストール
+
+3. **環境変数の設定**:
+   - Windows検索で「環境変数」と入力し、「システム環境変数の編集」を選択
+   - 「環境変数」ボタンをクリック
+   - 「システム環境変数」で新規作成:
+     - 変数名: `JAVA_HOME`
+     - 変数値: JDKのインストールパス (例: `C:\Program Files\Java\jdk-11.0.12`)
+   - `Path`変数を選択して「編集」をクリック
+   - 「新規」をクリックし、`%JAVA_HOME%\bin`を追加
+   - 「OK」をクリックして全てのダイアログを閉じる
+
+4. **インストールの確認**:
+   ```bash
+   java -version
+   javac -version
+   ```
+
+### macOS
+
+1. **Homebrewを使用する場合**:
+   ```bash
+   brew tap homebrew/cask-versions
+   brew install --cask temurin11
+   ```
+
+2. **環境変数の設定** (~/.zshrcまたは~/.bash_profileに追加):
+   ```bash
+   export JAVA_HOME=$(/usr/libexec/java_home -v 11)
+   export PATH=$JAVA_HOME/bin:$PATH
+   ```
+
+3. **変更を適用**:
+   ```bash
+   source ~/.zshrc   # または source ~/.bash_profile
+   ```
+
+4. **インストールの確認**:
+   ```bash
+   java -version
+   javac -version
+   ```
+
+## 2. Android Studio のインストール
+
+Android SDKとエミュレータを使用するためにAndroid Studioをインストールします。
+
+### Windows
+
+1. [Android Studio公式サイト](https://developer.android.com/studio)からインストーラーをダウンロード
+
+2. **インストーラーを実行**し、指示に従ってインストール:
+   - 「Custom」インストールを選択
+   - Android Virtual Device (AVD)を必ず選択
+
+3. **環境変数の設定**:
+   - Windows検索で「環境変数」と入力し、「システム環境変数の編集」を選択
+   - 「環境変数」ボタンをクリック
+   - 「システム環境変数」で新規作成:
+     - 変数名: `ANDROID_SDK_ROOT`
+     - 変数値: Android SDKのパス (通常は `C:\Users\<ユーザー名>\AppData\Local\Android\Sdk`)
+   - `Path`変数を選択して「編集」をクリック
+   - 以下の項目を追加:
+     ```
+     %ANDROID_SDK_ROOT%\platform-tools
+     %ANDROID_SDK_ROOT%\emulator
+     %ANDROID_SDK_ROOT%\tools
+     %ANDROID_SDK_ROOT%\tools\bin
+     ```
+   - 「OK」をクリックして全てのダイアログを閉じる
+
+### macOS
+
+1. [Android Studio公式サイト](https://developer.android.com/studio)からインストーラーをダウンロード
+
+2. **dmgファイルを開き、Android Studioをアプリケーションフォルダにドラッグ**
+
+3. **Android Studioを起動**し、セットアップウィザードの指示に従う:
+   - 「Custom」インストールを選択
+   - Android Virtual Device (AVD)を必ず選択
+
+4. **環境変数の設定** (~/.zshrcまたは~/.bash_profileに追加):
+   ```bash
+   export ANDROID_SDK_ROOT=$HOME/Library/Android/sdk
+   export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
+   export PATH=$PATH:$ANDROID_SDK_ROOT/emulator
+   export PATH=$PATH:$ANDROID_SDK_ROOT/tools
+   export PATH=$PATH:$ANDROID_SDK_ROOT/tools/bin
+   ```
+
+5. **変更を適用**:
+   ```bash
+   source ~/.zshrc   # または source ~/.bash_profile
+   ```
+
+## 3. Android SDK のセットアップ
+
+必要なSDKパッケージをインストールします。
+
+1. **Android Studioを起動**
+
+2. **ようこそ画面**または**設定画面**から「SDK Manager」を開く:
+   - メニューから「Tools」→「SDK Manager」を選択
+   - または「Welcome to Android Studio」画面から「More Actions」→「SDK Manager」を選択
+
+3. **「SDK Platforms」タブ**で以下をインストール:
+   - Android 13.0 (Tiramisu) API Level 33以上
+   - Android 12.0 (S) API Level 31
+   - 他の必要なバージョン
+
+4. **「SDK Tools」タブ**で以下をインストール:
+   - Android SDK Build-Tools
+   - Android SDK Command-line Tools
+   - Android Emulator
+   - Android SDK Platform-Tools
+   - Google Play services
+   - Intel x86 Emulator Accelerator (HAXM) (Windowsの場合)
+
+5. **「Apply」をクリック**してダウンロードとインストールを開始
+
+## 4. エミュレータの設定
+
+テスト用のAndroidエミュレータをセットアップします。
+
+1. **Android Studioを起動**
+
+2. **「More Actions」→「Virtual Device Manager」を選択**
+   - またはメニューから「Tools」→「Device Manager」を選択
+
+3. **「Create Device」ボタンをクリック**
+
+4. **ハードウェア選択**:
+   - スマートフォンの場合: Pixel 6などの端末を選択
+   - タブレットの場合: 対応するタブレットモデルを選択
+   - 「Next」をクリック
+
+5. **システムイメージ選択**:
+   - 「x86 Images」または「x86_64 Images」タブを選択
+   - 使用したいAndroidバージョンを選択（API Level 31/Android 12以上を推奨）
+   - 必要に応じてシステムイメージをダウンロード
+   - 「Next」をクリック
+
+6. **エミュレータ設定の確認**:
+   - デバイス名を設定（例：Pixel_6_API_31）
+   - 必要に応じて追加設定（メモリ、ストレージなど）を変更
+   - 「Finish」をクリック
+
+## 5. Ionic と Capacitor のインストール
+
+プロジェクトに必要なツールをグローバルにインストールします。
+
+```bash
+# Ionic CLIのインストール
+npm install -g @ionic/cli
+
+# Capacitor CLIのインストール (プロジェクトにすでにある場合は不要)
+npm install -g @capacitor/cli
+```
+
+## 6. プロジェクトのセットアップと構築
+
+```bash
+# プロジェクトディレクトリに移動
+cd your-project-directory
+
+# 依存関係のインストール
+npm install
+
+# ウェブアプリのビルド
+npm run build
+
+# Capacitor設定の確認
+# capacitor.config.ts または capacitor.config.json を編集して
+# 適切なサーバーURLを設定（ライブリロードを使用する場合）
+
+# Android プラットフォームを追加（まだ追加していない場合）
+npx cap add android
+
+# Android プラットフォームの同期（ビルド後に必ず実行）
+npx cap sync android
+```
+
+## 7. 実機テスト用の設定
+
+### USB デバッグの有効化 (実機テスト用)
+
+1. **Android端末で開発者オプションを有効にする**:
+   - 「設定」→「端末情報」→「ビルド番号」を7回タップ
+   - 「開発者として設定しました」というメッセージが表示される
+
+2. **USBデバッグを有効にする**:
+   - 「設定」→「システム」→「開発者向けオプション」→「USBデバッグ」をオン
+
+3. **コンピュータに接続**:
+   - USB ケーブルで端末をPCに接続
+   - 「USBデバッグを許可しますか？」というダイアログが表示されたら「許可」をタップ
+
+4. **接続の確認**:
+   ```bash
+   adb devices
+   ```
+   デバイスが一覧に表示されることを確認
+
+## 8. Androidアプリケーションの起動
+
+### エミュレータで実行
+
+```bash
+# Android Studioでプロジェクトを開く
+npx cap open android
+
+# または直接エミュレータで実行（Vite開発サーバーが起動している場合はライブリロードが有効）
+npx cap run android --target=Pixel_6_API_31
+```
+
+### 実機で実行
+
+```bash
+# 接続されたデバイスで実行
+npx cap run android
+```
+
+## トラブルシューティング
+
+### ライブリロードが機能しない場合
+
+1. `capacitor.config.json`または`capacitor.config.ts`のサーバーURLが正しく設定されていることを確認:
+
+```json
+{
+  "server": {
+    "url": "http://あなたのIPアドレス:5173",
+    "cleartext": true
+  }
+}
+```
+
+2. Vite開発サーバーが`--host`オプションで起動されていることを確認:
+
+```bash
+# vite.config.ts で server.host を設定しているか確認
+# または
+npm run dev -- --host
+```
+
+### ビルドエラーが発生する場合
+
+1. Gradleバージョンの問題:
+   - `android/gradle/wrapper/gradle-wrapper.properties`ファイルでGradleバージョンを確認
+   - プロジェクトのGradleバージョンとAndroid Studioの互換性を確認
+
+2. JDKのバージョン問題:
+   - Android StudioのJDKバージョンを確認（File > Project Structure > SDK Location）
+   - 必要に応じてJDKバージョンを変更
+
+3. ビルドキャッシュのクリア:
+   ```bash
+   cd android
+   ./gradlew clean
+   ```
+
+### AVDマネージャーでエミュレータが起動しない場合
+
+1. HAXMのインストール確認:
+   - Windows: Android SDK Managerで「Intel x86 Emulator Accelerator (HAXM)」がインストールされているか確認
+   - macOS: `~/Library/Android/sdk/extras/intel/Hardware_Accelerated_Execution_Manager`に移動し、インストーラーを実行
+
+2. BIOSの仮想化設定:
+   - PCのBIOS設定で仮想化テクノロジー（VT-x/AMD-V）が有効になっていることを確認
+
+### adbコマンドが認識されない場合
+
+1. `platform-tools`が環境変数のPathに追加されているか確認
+2. 手動で実行する場合:
+   ```bash
+   # Windowsの場合
+   %ANDROID_SDK_ROOT%\platform-tools\adb.exe devices
+   
+   # macOSの場合
+   $ANDROID_SDK_ROOT/platform-tools/adb devices
+   ```
+
+## 参考リンク
+
+- [Capacitor公式ドキュメント](https://capacitorjs.com/docs)
+- [Ionic Framework公式ドキュメント](https://ionicframework.com/docs)
+- [Android開発者サイト](https://developer.android.com/)
+- [Android Studio公式ガイド](https://developer.android.com/studio/intro)
+ 
